@@ -20,8 +20,11 @@ class Person
   Person *_mother;
   Person *_father;
   GenePool *_genePool;
+  std::set<Person *> _sons;
+  std::set<Person *> _daughters;
 
   // Helper Functions
+  void addChild(Person *person);
 
 public:
   // Constructor

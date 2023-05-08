@@ -1,6 +1,8 @@
 #include "Person.h"
 
 #include <iostream>
+#include <set>
+#include <algorithm>
 
 Person::Person(std::string name, std::string gender, std::string mother, std::string father, GenePool *genePool) : _name(name)
 {
@@ -20,14 +22,36 @@ Person::Person(std::string name, std::string gender, std::string mother, std::st
     }
 
     if (mother != "???")
+    {
         _mother = _genePool->find(mother);
+        _mother->addChild(this);
+    }
     else
+    {
         _mother = nullptr;
+    }
 
     if (father != "???")
+    {
         _father = _genePool->find(father);
+        _father->addChild(this);
+    }
     else
+    {
         _father = nullptr;
+    }
+}
+
+void Person::addChild(Person *person)
+{
+    if (person->gender() == Gender::MALE)
+    {
+        _sons.insert(person);
+    }
+    else
+    {
+        _daughters.insert(person);
+    }
 }
 
 // Person Member Functions
@@ -89,6 +113,7 @@ std::set<Person *> Person::brothers(PMod pmod, SMod smod)
 std::set<Person *> Person::children()
 {
     std::set<Person *> result;
+    std::merge(_sons.begin(), _sons.end(), _daughters.begin(), _daughters.end(), std::inserter(result, result.begin()));
     return result;
 }
 std::set<Person *> Person::cousins(PMod pmod, SMod smod)
@@ -98,8 +123,7 @@ std::set<Person *> Person::cousins(PMod pmod, SMod smod)
 }
 std::set<Person *> Person::daughters()
 {
-    std::set<Person *> result;
-    return result;
+    return _daughters;
 }
 std::set<Person *> Person::descendants()
 {
@@ -109,11 +133,35 @@ std::set<Person *> Person::descendants()
 std::set<Person *> Person::grandchildren()
 {
     std::set<Person *> result;
+    for (Person *person : _sons)
+    {
+        std::set<Person *> res2 = person->children();
+        if (!res2.empty())
+            result.insert(res2.begin(), res2.end());
+    }
+    for (Person *person : _daughters)
+    {
+        std::set<Person *> res2 = person->children();
+        if (!res2.empty())
+            result.insert(res2.begin(), res2.end());
+    }
     return result;
 }
 std::set<Person *> Person::granddaughters()
 {
     std::set<Person *> result;
+    for (Person *person : _sons)
+    {
+        std::set<Person *> res2 = person->daughters();
+        if (!res2.empty())
+            result.insert(res2.begin(), res2.end());
+    }
+    for (Person *person : _daughters)
+    {
+        std::set<Person *> res2 = person->daughters();
+        if (!res2.empty())
+            result.insert(res2.begin(), res2.end());
+    }
     return result;
 }
 std::set<Person *> Person::grandfathers(PMod pmod)
@@ -178,6 +226,18 @@ std::set<Person *> Person::grandparents(PMod pmod)
 std::set<Person *> Person::grandsons()
 {
     std::set<Person *> result;
+    for (Person *person : _sons)
+    {
+        std::set<Person *> res2 = person->sons();
+        if (!res2.empty())
+            result.insert(res2.begin(), res2.end());
+    }
+    for (Person *person : _daughters)
+    {
+        std::set<Person *> res2 = person->sons();
+        if (!res2.empty())
+            result.insert(res2.begin(), res2.end());
+    }
     return result;
 }
 std::set<Person *> Person::nephews(PMod pmod, SMod smod)
@@ -215,8 +275,7 @@ std::set<Person *> Person::sisters(PMod pmod, SMod smod)
 }
 std::set<Person *> Person::sons()
 {
-    std::set<Person *> result;
-    return result;
+    return _sons;
 }
 std::set<Person *> Person::uncles(PMod pmod, SMod smod)
 {
