@@ -216,6 +216,17 @@ std::set<Person *> Person::daughters()
 std::set<Person *> Person::descendants()
 {
     std::set<Person *> result;
+    std::set<Person *> res2 = children();
+    if (!res2.empty())
+    {
+        result.insert(res2.begin(), res2.end());
+        for (Person *person : res2)
+        {
+            std::set<Person *> res3 = person->descendants();
+            if (!res3.empty())
+                result.insert(res3.begin(), res3.end());
+        }
+    }
     return result;
 }
 std::set<Person *> Person::grandchildren()
