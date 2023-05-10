@@ -137,7 +137,7 @@ std::set<Person *> Person::brothers(PMod pmod, SMod smod)
                 {
                     continue;
                 }
-                if ((smod == SMod::FULL || smod == SMod::ANY) && person->father() == _father)
+                if ((smod == SMod::FULL || smod == SMod::ANY) && person->father() == _father && _father != nullptr)
                 {
                     result.insert(person);
                 }
@@ -159,7 +159,7 @@ std::set<Person *> Person::brothers(PMod pmod, SMod smod)
                 {
                     continue;
                 }
-                if ((smod == SMod::FULL || smod == SMod::ANY) && person->mother() == _mother)
+                if ((smod == SMod::FULL || smod == SMod::ANY) && person->mother() == _mother && _mother != nullptr)
                 {
                     result.insert(person);
                 }
@@ -368,13 +368,19 @@ std::set<Person *> Person::nieces(PMod pmod, SMod smod)
 std::set<Person *> Person::parents(PMod pmod)
 {
     std::set<Person *> result;
-    if (_father != nullptr)
+    if (pmod == PMod::PATERNAL || pmod == PMod::ANY)
     {
-        result.insert(_father);
+        if (_father != nullptr)
+        {
+            result.insert(_father);
+        }
     }
-    if (_mother != nullptr)
+    if (pmod == PMod::PATERNAL || pmod == PMod::ANY)
     {
-        result.insert(_mother);
+        if (_mother != nullptr)
+        {
+            result.insert(_mother);
+        }
     }
     return result;
 }
@@ -392,7 +398,7 @@ std::set<Person *> Person::siblings(PMod pmod, SMod smod)
                 {
                     continue;
                 }
-                if ((smod == SMod::FULL || smod == SMod::ANY) && person->father() == _father)
+                if ((smod == SMod::FULL || smod == SMod::ANY) && person->father() == _father && _father != nullptr)
                 {
                     result.insert(person);
                 }
@@ -414,7 +420,7 @@ std::set<Person *> Person::siblings(PMod pmod, SMod smod)
                 {
                     continue;
                 }
-                if ((smod == SMod::FULL || smod == SMod::ANY) && person->mother() == _mother)
+                if ((smod == SMod::FULL || smod == SMod::ANY) && person->mother() == _mother && _mother != nullptr)
                 {
                     result.insert(person);
                 }
@@ -442,7 +448,7 @@ std::set<Person *> Person::sisters(PMod pmod, SMod smod)
                 {
                     continue;
                 }
-                if ((smod == SMod::FULL || smod == SMod::ANY) && person->father() == _father)
+                if ((smod == SMod::FULL || smod == SMod::ANY) && person->father() == _father && _father != nullptr)
                 {
                     result.insert(person);
                 }
@@ -464,7 +470,7 @@ std::set<Person *> Person::sisters(PMod pmod, SMod smod)
                 {
                     continue;
                 }
-                if ((smod == SMod::FULL || smod == SMod::ANY) && person->mother() == _mother)
+                if ((smod == SMod::FULL || smod == SMod::ANY) && person->mother() == _mother && _mother != nullptr)
                 {
                     result.insert(person);
                 }
